@@ -1,19 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:add_2_calendar/src/model/recurrence.dart';
 
 /// Class that holds each event's info.
 class Event {
-  String title, description, location;
-  String? timeZone;
-  DateTime startDate, endDate;
-  bool allDay;
+  final String title, description, location;
+  final String? timeZone;
+  final DateTime startDate, endDate;
+  final bool allDay;
 
-  IOSParams iosParams;
-  AndroidParams androidParams;
-  Recurrence? recurrence;
+  final IOSParams iosParams;
+  final AndroidParams androidParams;
+  final Recurrence? recurrence;
 
-  Event({
+  /// Specify a custom location with lat and lon.
+  ///
+  /// If [iosLocation] is null, it will use [location] instead
+  final IOSLocation? iosLocation;
+
+  const Event({
     required this.title,
     this.description = '',
     this.location = '',
@@ -24,6 +30,7 @@ class Event {
     this.iosParams = const IOSParams(),
     this.androidParams = const AndroidParams(),
     this.recurrence,
+    this.iosLocation,
   });
 
   Map<String, dynamic> toJson() {
@@ -36,6 +43,7 @@ class Event {
       'timeZone': timeZone,
       'allDay': allDay,
       'recurrence': recurrence?.toJson(),
+      'iosLocation': iosLocation?.toJson()
     };
 
     if (Platform.isIOS) {
@@ -58,4 +66,20 @@ class IOSParams {
   //In iOS, you can set alert notification with duration. Ex. Duration(minutes:30) -> After30 min.
   final Duration? reminder;
   const IOSParams({this.reminder});
+}
+
+class IOSLocation {
+  final String? name;
+  final double lat;
+  final double lon;
+
+  const IOSLocation({this.name = '', required this.lat, required this.lon});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'lat': lat,
+      'lon': lon,
+    };
+  }
 }
