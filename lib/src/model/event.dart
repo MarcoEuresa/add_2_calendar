@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:add_2_calendar/src/model/recurrence.dart';
@@ -12,9 +13,14 @@ class Event {
   DateTime endDate;
   bool allDay;
 
-  IOSParams iosParams;
-  AndroidParams androidParams;
-  Recurrence? recurrence;
+  final IOSParams iosParams;
+  final AndroidParams androidParams;
+  final Recurrence? recurrence;
+
+  /// Specify a custom location with lat and lon.
+  ///
+  /// If [iosLocation] is null, it will use [location] instead
+  final IOSLocation? iosLocation;
 
   Event({
     required this.title,
@@ -27,6 +33,7 @@ class Event {
     this.iosParams = const IOSParams(),
     this.androidParams = const AndroidParams(),
     this.recurrence,
+    this.iosLocation,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,6 +46,7 @@ class Event {
       'timeZone': timeZone,
       'allDay': allDay,
       'recurrence': recurrence?.toJson(),
+      'iosLocation': iosLocation?.toJson()
     };
 
     if (Platform.isIOS) {
@@ -64,4 +72,20 @@ class IOSParams {
   final String? url;
 
   const IOSParams({this.reminder, this.url});
+}
+
+class IOSLocation {
+  final String? name;
+  final double lat;
+  final double lon;
+
+  const IOSLocation({this.name = '', required this.lat, required this.lon});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'lat': lat,
+      'lon': lon,
+    };
+  }
 }

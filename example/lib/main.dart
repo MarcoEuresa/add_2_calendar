@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
     return Event(
       title: 'Test eventeee',
       description: 'example',
-      location: 'Flutter app',
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(minutes: 30)),
       allDay: false,
@@ -24,6 +23,8 @@ class MyApp extends StatelessWidget {
         emailInvites: ["test@example.com"],
       ),
       recurrence: recurrence,
+      iosLocation:
+          IOSLocation(lat: 49.633563, lon: 8.516520, name: 'Testlocation'),
     );
   }
 

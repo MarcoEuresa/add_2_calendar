@@ -37,7 +37,6 @@ public class SwiftAdd2CalendarPlugin: NSObject, FlutterPlugin {
 
     private func addEventToCalendar(from args: [String:Any], completion: ((_ success: Bool) -> Void)? = nil) {
         
-        
         let title = args["title"] as! String
         let description = args["desc"] is NSNull ? nil: args["desc"] as! String
         let location = args["location"] is NSNull ? nil: args["location"] as! String
@@ -73,6 +72,22 @@ public class SwiftAdd2CalendarPlugin: NSObject, FlutterPlugin {
                     event.url = URL(string: url);
                 }
                 event.isAllDay = allDay
+                event.location = location
+
+                if let iosLocation = args["iosLocation"] as? [String:Any]{
+                let locationName = iosLocation["name"] as! String
+                let locationLat = iosLocation["lat"] as! Double
+                let locatonLon = iosLocation["lon"] as! Double
+                var structuredLocation = EKStructuredLocation(title:locationName) //Put your title here
+                let clLocation = CLLocation(latitude: locationLat, longitude: locatonLon) //use your lat/long vals
+                structuredLocation.geoLocation = clLocation
+                structuredLocation.radius = 1000 //This would be a 1 KM distance. Modify as desired
+                event.structuredLocation = structuredLocation
+                } else {
+                    event.location = location
+                }
+              
+                
                 
                 if let recurrence = args["recurrence"] as? [String:Any]{
                     let interval = recurrence["interval"] as! Int
